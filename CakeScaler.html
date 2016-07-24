@@ -1,0 +1,134 @@
+<html>
+    <head>
+        <style>
+            @import url('https://fonts.googleapis.com/css?family=Open+Sans');
+             * {
+                 font-size: 100%;
+                 font-family: Open Sans;
+             }
+        </style>
+        <script type="text/javascript">
+            function calculateVolume(diameter, height) {
+                return 3.14159 * diameter * diameter * height * 0.25;
+            }
+            function calculateTargetVolume() {
+                var td = document.getElementById("td").value;
+                var th = document.getElementById("th").value;
+                return calculateVolume(td, th);
+            }
+            function calculateDestinationVolume() {
+                var dd = document.getElementById("dd").value;
+                var dh = document.getElementById("dh").value;
+                return calculateVolume(dd, dh);
+            }
+            function calculateVolumeRatio() {
+                return (calculateDestinationVolume() / calculateTargetVolume());
+            }
+            function populateTargetVolume() {
+                document.getElementById("tv").innerHTML = calculateTargetVolume().toFixed(2);
+            }
+            function populateDestVolume() {
+                document.getElementById("dv").innerHTML = calculateDestinationVolume().toFixed(2);
+            }
+            function populateVolumeRatio() {
+                document.getElementById("vr").innerHTML = calculateVolumeRatio().toFixed(2);
+            }
+            function populateScaledValues() {
+                document.getElementById("fSugar").innerHTML = Math.round(calculateVolumeRatio()*document.getElementById("iSugar").value);
+                document.getElementById("fButter").innerHTML = Math.round(calculateVolumeRatio() * document.getElementById("iButter").value);
+                document.getElementById("fFlour").innerHTML = Math.round(calculateVolumeRatio() * document.getElementById("iFlour").value);
+                document.getElementById("fBpowder").innerHTML = Math.round(calculateVolumeRatio() * document.getElementById("iBpowder").value);
+                document.getElementById("fEggs").innerHTML = (calculateVolumeRatio() * document.getElementById("iEggs").value).toFixed(2);
+            }
+            function calculate() {
+                populateTargetVolume();
+                populateDestVolume();
+                populateVolumeRatio();
+                populateScaledValues();
+            }
+        </script>
+        <title>Cake Scaler</title>
+    </head>
+    <body>
+        Input the ingredient quantities that you have for your "target" tin. <br />
+        Then input the diameter and height of the tin you use for that recipe. <br />
+        Then input the diameter and height of the tin for which you wish to calculate quantites. <br />
+        Hit Calculate! <br/>
+
+        <h1>Ingredient Quantities</h1>
+        <table>
+            <tr>
+                <td align="right">Butter (g):</td>
+                <td><input type="text" id="iButter" value="200"/></td>
+            </tr>
+            <tr>
+                <td align="right">Sugar (g):</td>
+                <td><input type="text" id="iSugar" value="200"/></td>
+            </tr>
+            <tr>
+                <td align="right">Flour (g):</td>
+                <td><input type="text" id="iFlour" value="200"/></td>
+            </tr>
+            <tr>
+                <td align="right">Baking Powder (g):</td>
+                <td><input type="text" id="iBpowder" value="10"/></td>
+            </tr>
+            <tr>
+                <td align="right">Eggs:</td>
+                <td><input type="text" id="iEggs" value="4"/></td>
+            </tr>
+        </table>
+
+        <h1>Tin Dimensions</h1>
+        <table>
+            <tr>
+                <td align="right">Target Tin Diameter (cm):</td>
+                <td><input type="text" id="td" value="20"/></td>
+                <td align="right">Target Tin Height (cm):</td>
+                <td><input type="text" id="th" value="4"/></td>
+            </tr>
+            <tr>
+                <td align="right">Destination Tin Diameter (cm):</td>
+                <td><input type="text" id="dd" value="25"/></td>
+                <td align="right">Destination Tin Height (cm):</td>
+                <td><input type="text" id="dh" value="4"/></td>
+            </tr>
+            <tr>
+                <td align="right">Target Tin Volume (ml):</td>
+                <td><label id="tv"></label></td>
+                <td align="right"> Destination Tin Volume (ml):</td>
+                <td><label id="dv"></label><td>
+            </tr>
+        </table>
+
+        <h1>Scaled Quantities</h1>
+        <table>
+            <tr>
+                <td align="right">Volume Ratio:</td>
+                <td><label id="vr"></label></td>
+            </tr>
+            <tr>
+                <td align="right">Butter (g):</td>
+                <td><label id="fButter"></label></td>
+            </tr>
+            <tr>
+                <td align="right">Sugar (g):</td>
+                <td><label id="fSugar"></label></td>
+            </tr>
+            <tr>
+                <td align="right">Flour (g):</td>
+                <td><label id="fFlour"></label></td>
+            </tr>
+            <tr>
+                <td align="right">Baking Powder (g):</td>
+                <td><label id="fBpowder"></label></td>
+            </tr>
+            <tr>
+                <td align="right">Eggs:</td>
+                <td><label id="fEggs"></label></td>
+            </tr>
+        </table>
+        <br/>
+        <button onclick="calculate()">Calculate!</button>
+    </body>
+</html>

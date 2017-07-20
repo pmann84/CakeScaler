@@ -43,28 +43,17 @@
 				}
             }
             function calculateVolumeRatio() {
-                return (calculateDestinationVolume(getTinType()) / calculateTargetVolume(getTinType()));
+                return (calculateDestinationVolume(getDestinationTinType()) / calculateTargetVolume(getOriginalTinType()));
             }
-            function populateTargetVolume() {
-				var tinType = getTinType();
-				if (tinType == "square") {
-					targetVolElement = document.getElementById("stv")
-				}
-				else {
-					targetVolElement = document.getElementById("rtv")
-				}
-                targetVolElement.innerHTML = calculateTargetVolume(tinType).toFixed(2);
+            function populateOrigVolume() {
+				var tinType = getOriginalTinType();
+				var originalVol = calculateTargetVolume(tinType).toFixed(2);
+                document.getElementById("tv").innerHTML = originalVol;
             }
             function populateDestVolume() {
-				var tinType = getTinType();
-				if (tinType == "square") {
-					destVolElement = document.getElementById("sdv")
-				}
-				else {
-					destVolElement = document.getElementById("rdv")
-				}
+				var tinType = getDestinationTinType();
 				var destVol = calculateDestinationVolume(tinType).toFixed(2);
-                destVolElement.innerHTML = destVol;
+                document.getElementById("dv").innerHTML = destVol;
             }
             function populateVolumeRatio() {
                 document.getElementById("vr").innerHTML = calculateVolumeRatio().toFixed(2);
@@ -77,55 +66,76 @@
                 document.getElementById("fEggs").innerHTML = (calculateVolumeRatio() * document.getElementById("iEggs").value).toFixed(2);
             }
             function calculate() {
-                populateTargetVolume();
+                populateOrigVolume();
                 populateDestVolume();
                 populateVolumeRatio();
                 populateScaledValues();
             }
-			function toggleSquareTinElements(show) {
-				if (show == true) {
-					displayStyle = 'block';
-				}
-				else {
-					displayStyle = 'none';
-				}
-				var squareHeader = document.getElementById('squareHead');
-				squareHeader.style.display = displayStyle;
-				var squareTable = document.getElementById('squareTable');
-				squareTable.style.display = displayStyle;
-			}
-			function toggleRoundTinElements(show) {
-				if (show == true) {
-					displayStyle = 'block';
-				}
-				else {
-					displayStyle = 'none';
-				}
-				var roundHeader = document.getElementById('roundHead');
-				roundHeader.style.display = displayStyle;
-				var roundTable = document.getElementById('roundTable');
-				roundTable.style.display = displayStyle;
-			}
-			function updateDimensions(element) {
+			function updateOriginalDimensions(element) {
 				if (element.value == "square")
 				{
-					toggleSquareTinElements(true);
-					toggleRoundTinElements(false);
+					var sqRows = document.getElementsByClassName("origSquare");
+					for(var i = 0; i < sqRows.length; ++i) {
+						sqRows[i].style.display = '';
+					}
+					var roRows = document.getElementsByClassName("origRound");
+					for(var i = 0; i < roRows.length; ++i) {
+						roRows[i].style.display = 'none';
+					}
 				}
 				else
 				{
-					toggleSquareTinElements(false);
-					toggleRoundTinElements(true);
+					var sqRows = document.getElementsByClassName("origSquare");
+					for(var i = 0; i < sqRows.length; ++i) {
+						sqRows[i].style.display = 'none';
+					}
+					var roRows = document.getElementsByClassName("origRound");
+					for(var i = 0; i < roRows.length; ++i) {
+						roRows[i].style.display = '';
+					}
 				}
+				document.getElementById("tv").innerHTML = "";
 			}
-			function getTinType() {
-				var tinTypeElement = document.getElementById('tinType');
+			function updateDestinationDimensions(element) {
+				if (element.value == "square")
+				{
+					var sqRows = document.getElementsByClassName("destSquare");
+					for(var i = 0; i < sqRows.length; ++i) {
+						sqRows[i].style.display = '';
+					}
+					var roRows = document.getElementsByClassName("destRound");
+					for(var i = 0; i < roRows.length; ++i) {
+						roRows[i].style.display = 'none';
+					}
+				}
+				else
+				{
+					var sqRows = document.getElementsByClassName("destSquare");
+					for(var i = 0; i < sqRows.length; ++i) {
+						sqRows[i].style.display = 'none';
+					}
+					var roRows = document.getElementsByClassName("destRound");
+					for(var i = 0; i < roRows.length; ++i) {
+						roRows[i].style.display = '';
+					}
+				}
+				document.getElementById("dv").innerHTML = "";
+			}
+			function getOriginalTinType() {
+				var tinTypeElement = document.getElementById('origTinType');
+				var tinType = tinTypeElement.options[tinTypeElement.selectedIndex].value;
+				return tinType;
+			}
+			function getDestinationTinType() {
+				var tinTypeElement = document.getElementById('destTinType');
 				var tinType = tinTypeElement.options[tinTypeElement.selectedIndex].value;
 				return tinType;
 			}
 			window.onload = function() {
-				var tinTypeElement = document.getElementById('tinType');
-				updateDimensions(tinTypeElement);
+				var origTinTypeElement = document.getElementById('origTinType');
+				updateOriginalDimensions(origTinTypeElement);
+				var destTinTypeElement = document.getElementById('destTinType');
+				updateDestinationDimensions(destTinTypeElement);
 			};
         </script>
         <title>Cake Scaler</title>
@@ -160,66 +170,79 @@
             </tr>
         </table>
 
-		<h1>Tin Type</h1>
-		        <table>
-            <tr>
-                <td align="right">Tin Shape:</td>
+		<h1>Original Tin</h1>
+		<table id="originalTin">
+			<tr>
+                <td align="right">Shape:</td>
                 <td>
-					<select id="tinType" onChange="updateDimensions(this)">
+					<select id="origTinType" onChange="updateOriginalDimensions(this)">
 						<option value="round">Round</option>
 						<option value="square">Square</option>
 					</select>
 				</td>
             </tr>
-        </table>
-		
-        <h1 id="roundHead" >Round Tin Dimensions</h1>
-        <table id="roundTable">
-            <tr>
-                <td align="right">Target Tin Diameter (cm):</td>
+			<tr class="origRound">
+                <td align="right">Diameter (cm):</td>
                 <td><input type="text" id="rtd" value="20"/></td>
-                <td align="right">Target Tin Height (cm):</td>
+			</tr>
+			<tr class="origRound">
+                <td align="right">Height (cm):</td>
                 <td><input type="text" id="rth" value="4"/></td>
             </tr>
-            <tr>
-                <td align="right">Destination Tin Diameter (cm):</td>
-                <td><input type="text" id="rdd" value="25"/></td>
-                <td align="right">Destination Tin Height (cm):</td>
-                <td><input type="text" id="rdh" value="4"/></td>
-            </tr>
-            <tr>
-                <td align="right">Target Tin Volume (ml):</td>
-                <td><label id="rtv"></label></td>
-                <td align="right"> Destination Tin Volume (ml):</td>
-                <td><label id="rdv"></label><td>
-            </tr>
-        </table>
-		
-		<h1 id="squareHead" >Square Tin Dimensions</h1>
-        <table id="squareTable">
-            <tr>
-                <td align="right">Target Tin Width (cm):</td>
+			<tr class="origSquare">
+                <td align="right">Width (cm):</td>
                 <td><input type="text" id="stw" value="20"/></td>
-				<td align="right">Target Tin Breadth (cm):</td>
+            </tr>
+			<tr class="origSquare">
+				<td align="right">Breadth (cm):</td>
                 <td><input type="text" id="stb" value="20"/></td>
-                <td align="right">Target Tin Height (cm):</td>
+            </tr>
+			<tr class="origSquare">
+                <td align="right">Height (cm):</td>
                 <td><input type="text" id="sth" value="4"/></td>
             </tr>
-            <tr>
-                <td align="right">Desination Tin Width (cm):</td>
+			<tr>
+			    <td align="right">Tin Volume (ml):</td>
+                <td><label id="tv"></label></td>
+			</tr>
+		</table>
+		
+		<h1>Destination Tin</h1>
+		<table id="destinationTin">
+			<tr>
+                <td align="right">Shape:</td>
+                <td>
+					<select id="destTinType" onChange="updateDestinationDimensions(this)">
+						<option value="round">Round</option>
+						<option value="square">Square</option>
+					</select>
+				</td>
+            </tr>
+			<tr class="destRound">
+                <td align="right">Diameter (cm):</td>
+                <td><input type="text" id="rdd" value="25"/></td>
+			</tr>
+			<tr class="destRound">
+                <td align="right">Height (cm):</td>
+                <td><input type="text" id="rdh" value="4"/></td>
+            </tr>
+			<tr class="destSquare">
+                <td align="right">Width (cm):</td>
                 <td><input type="text" id="sdw" value="25"/></td>
-				<td align="right">Desination Tin Breadth (cm):</td>
+            </tr>
+			<tr class="destSquare">
+				<td align="right">Breadth (cm):</td>
                 <td><input type="text" id="sdb" value="25"/></td>
-                <td align="right">Desination Tin Height (cm):</td>
+            </tr>
+			<tr class="destSquare">
+                <td align="right">Height (cm):</td>
                 <td><input type="text" id="sdh" value="4"/></td>
             </tr>
-            <tr>
-                <td align="right">Target Tin Volume (ml):</td>
-                <td><label id="stv"></label></td>
-                <td align="right"> Destination Tin Volume (ml):</td>
-                <td><label id="sdv"></label><td>
-            </tr>
-        </table>
+			<tr>
+			    <td align="right">Tin Volume (ml):</td>
+                <td><label id="dv"></label></td>
+			</tr>
+		</table>
 
         <h1>Scaled Quantities</h1>
         <table>

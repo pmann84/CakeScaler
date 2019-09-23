@@ -6,3 +6,6 @@ If you have a recipe for a sponge that you use for a particular size tin and you
 
 Simply download the html page and load it in your browser of choice.
 Enter the details asked and hit Calculate!
+
+### Notes ###
+Lacks any finesse but does the job ;P
